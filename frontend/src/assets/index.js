@@ -1,0 +1,9 @@
+export { default as account_icon } from "./account_icon.svg";
+export { default as introduction_icon } from "./introduction_icon.svg";
+export { default as list_icon } from "./list_icon.svg";
+export { default as login_icon } from "./login_icon.svg";
+export { default as logo_icon } from "./logo_icon.svg";
+export { default as logout_icon } from "./logout_icon.svg";
+export { default as menu_icon } from "./menu_icon.svg";
+export { default as notice_icon } from "./notice_icon.svg";
+export { default as write_icon } from "./write_icon.svg";
