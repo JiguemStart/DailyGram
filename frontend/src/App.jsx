@@ -85,7 +85,7 @@ function App() {
               <Route path="/diaryDetail" element={<DiaryDetailPage />} />
               <Route path="/diaryWrite" element={<DiaryWritePage />} />
               <Route path="/findPassword" element={<FindPasswordPage />} />
-              <Route path="/Introduction" element={<IntroductionPage />} />
+              <Route path="/introduction" element={<IntroductionPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/main" element={<MainPage />} />
               <Route path="/notice" element={<NoticePage />} />
