@@ -7,3 +7,4 @@ export { default as logout_icon } from "./logout_icon.svg";
 export { default as menu_icon } from "./menu_icon.svg";
 export { default as notice_icon } from "./notice_icon.svg";
 export { default as write_icon } from "./write_icon.svg";
+export { default as mail_icon } from "./mail_icon.svg";
