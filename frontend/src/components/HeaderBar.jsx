@@ -2,9 +2,25 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { account_icon, login_icon, logout_icon, logo_icon } from "../assets";
 import { useState } from "react";
+import MobileSideBar from "./MobileSideBar";
+import { useEffect } from "react";
 
 const HeaderBar = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const [mobileBarActive, setMobileBarActive] = useState(false)
+
+  const clickHandler = (id) => {
+    if (id == "mobileButton") {
+      setMobileBarActive(true)
+    }
+    else  {
+      setMobileBarActive(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", (e) => clickHandler(e.target.id));
+  }, []);
 
   return (
     <>
@@ -82,7 +98,7 @@ const HeaderBar = () => {
             </LinkBox>
             </Link>
           </Button>
-          <Button>
+          <Button id="mobileButton" >
             <Icon>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -97,11 +113,13 @@ const HeaderBar = () => {
           </Button>
         </ContentBox>
       </Container>
+      <MobileSideBar state={mobileBarActive}/>
     </>
   );
 };
 
 const Container = styled.header`
+  display: fixed;
   background-color: #3f51b5;
 `;
 
@@ -111,8 +129,11 @@ const ContentBox = styled.div`
   margin: 0 auto;
   align-items: center;
   justify-content: right;
-  max-width: 1200px;
+  width: 1200px;
   height: 50px;
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+};
 `;
 const Button = styled.div`
   display: flex;
@@ -153,6 +174,7 @@ const Button = styled.div`
     @media screen and (max-width: 820px) {
       display: flex;
   };
+  cursor: pointer;
 `;
 
 const LinkBox = styled.div`
@@ -167,6 +189,7 @@ const ButtonText = styled.div`
   color: #ffffff;
 `;
 const Icon = styled.div`
+pointer-events: none;
   wdith: 40px;
   height: 40px;
 `;
