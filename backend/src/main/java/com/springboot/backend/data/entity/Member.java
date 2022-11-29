@@ -3,6 +3,8 @@ package com.springboot.backend.data.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -28,5 +30,8 @@ public class Member extends BaseEntity{
 
     @Column(name = "password_answer")
     private String passwordAnswer; // 비밀번호변경질문
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<Diary> diaryList = new ArrayList<>();
 
 }
