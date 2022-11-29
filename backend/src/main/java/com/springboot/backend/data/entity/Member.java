@@ -19,7 +19,7 @@ public class Member extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 회원고유id
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email; // 이메일
 
     @Column(name = "password")

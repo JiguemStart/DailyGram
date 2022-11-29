@@ -8,7 +8,7 @@ import com.springboot.backend.result.WithdrawalResult;
 
 
 public interface MemberService {
-    MemberResponseDto saveMemberDto(MemberDto memberDto);
+    boolean saveMemberDto(MemberDto memberDto) throws Exception;
 
     LoginResult login(String email, String password);
 
