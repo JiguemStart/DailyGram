@@ -2,20 +2,24 @@ package com.springboot.backend.service;
 
 import com.springboot.backend.data.dto.DiaryDto;
 import com.springboot.backend.data.dto.DiaryResponseDto;
-import com.springboot.backend.result.ConnectResult;
+import com.springboot.backend.result.*;
 
 import java.util.List;
 
 public interface DiaryService {
-    ConnectResult confrimToken(String accessToken, String refreshToken);
+//    ConnectResult confrimToken(String accessToken, String refreshToken);
 
-    boolean createDiary(DiaryDto diaryDto);
+    DairyListResult getDiaryList(String accessToken, String refreshToken, Integer page);
 
-    List<DiaryResponseDto> getDiaryList(String email, Integer page);
+    DairyDetailResult getDiaryDetail(Long diaryNum, String accessToken, String refreshToken);
 
-    DiaryResponseDto getDiaryDetail(Long diaryNum);
+    DairyNumResult getDiaryNum(String accessToken, String refreshToken);
 
-    Integer getDiaryNum(String email);
+    DairyDeleteResult deleteDiary(Long diaryId,String accessToken, String refreshToken);
 
-    boolean deleteDiary(Long diaryId);
+    MemberInfoResult getPasswordQuestion(String accessToken, String refreshToken);
+
+    ConnectResult createDiary(DiaryDto diaryDto, String accessToken, String refreshToken);
+
+    String getPasswordQuestionByEmail(String email);
 }

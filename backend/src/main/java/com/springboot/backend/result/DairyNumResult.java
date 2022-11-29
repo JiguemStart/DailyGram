@@ -3,16 +3,16 @@ package com.springboot.backend.result;
 import lombok.Data;
 
 @Data // Getter, Setter, ToString, EqualsAndHashCode
-public class ConnectResult<T> {
+public class DairyNumResult<T> {
     private boolean tokenResult;
     private String newAccessToken;
-    private String email;
+    private Integer num;
 
-    public ConnectResult(boolean tokenResult,
-                         String newAccessToken,
-                         String email) {
+    public DairyNumResult(boolean tokenResult,
+                          String newAccessToken,
+                          Integer num) {
         this.tokenResult = tokenResult;
         this.newAccessToken = newAccessToken;
-        this.email = email;
+        this.num = num;
     }
 }
