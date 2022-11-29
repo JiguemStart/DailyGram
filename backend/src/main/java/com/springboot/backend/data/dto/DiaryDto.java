@@ -14,5 +14,7 @@ public class DiaryDto {
     private String feeling; // 기분
     private String title; // 제목
     private String content; // 내용
+    private String accessToken;
+    private String refreshToken;
 //    private Long memberId;
 }

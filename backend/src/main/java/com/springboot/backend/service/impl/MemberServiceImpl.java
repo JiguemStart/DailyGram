@@ -43,28 +43,28 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public MemberResponseDto saveMemberDto(MemberDto memberDto) {
+    public boolean saveMemberDto(MemberDto memberDto) throws Exception{
 
-        Member member = new Member();
-        member.setEmail(memberDto.getEmail());
-        member.setPasswordQuestion(memberDto.getPasswordQuestion());
-        member.setPasswordAnswer(memberDto.getPasswordAnswer());
-        ///////
-        String encodedPassword = passwordEncoder.encode(memberDto.getPassword());
-        member.setPassword(encodedPassword);
-        ///////
-        memberRepository.save(member);
+        if (!memberDto.getEmail().isEmpty() &&
+                !memberDto.getPassword().isEmpty() &&
+                !memberDto.getPasswordQuestion().isEmpty() &&
+                !memberDto.getPasswordAnswer().isEmpty()) {
 
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
-        memberResponseDto.setId(member.getId());
-        memberResponseDto.setEmail(member.getEmail());
-        memberResponseDto.setPassword(member.getPassword());
-        memberResponseDto.setPasswordQuestion(member.getPasswordQuestion());
-        memberResponseDto.setPasswordAnswer(member.getPasswordAnswer());
-        memberResponseDto.setCreatedAt(member.getCreatedAt());
-        memberResponseDto.setUpdatedAt(member.getUpdatedAt());
+            Member member = new Member();
+            member.setEmail(memberDto.getEmail());
+            member.setPasswordQuestion(memberDto.getPasswordQuestion());
+            member.setPasswordAnswer(memberDto.getPasswordAnswer());
+            ///////
+            String encodedPassword = passwordEncoder.encode(memberDto.getPassword());
+            member.setPassword(encodedPassword);
+            ///////
+            memberRepository.save(member);
 
-        return memberResponseDto;
+            return true;
+        } else {
+            return false;
+        }
+
 
     }
 
@@ -189,15 +189,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean duplicateCheck(String email) {
-
-
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         if (optionalMember.isPresent()) {
-            memberRepository.deleteById(optionalMember.get().getId());
-            return true;
-        } else {
             return false;
+        } else {
+            return true;
         }
     }
 }
