@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from "../feature/counter/counterSlice";
 
 const AccountPage = () => {
   const [answerActive, setAnswerActive] = useState(false);
@@ -16,6 +20,120 @@ const AccountPage = () => {
 
   const [caution, setCaution] = useState(false)
 
+  const [quiz, setQuiz] = useState("")
+
+  const [answerAvailable, setAnswerAvailable] = useState(2)
+
+  const navigate = useNavigate()
+
+  const isLogin = useSelector((state) => state.isLogin.value);
+  const dispatch = useDispatch()
+
+    /** 이메일주소로 질문 리턴받는 api */
+    const questionRequest = async () => {
+
+        await axios
+          .post(`http://localhost:8080/member/view/password-question`, {
+            accessToken: getCookie("accessToken"),
+            refresToken: getCookie("refreshToken"),
+            })
+          .then((res) => {
+            if(res.data.tokenResult == true) {
+              setQuiz(res.data.passwordQuestion)
+              console.log("댐")
+            }
+            else {
+              setQuiz("비밀번호 질문을 불러오는데 실패하였습니다.")
+              console.log("안댐")
+            }
+              
+
+          })
+          .catch((error) => {
+            alert("요청에 실패하였습니다.");
+            console.log(error);
+          });
+      
+    };
+
+        /** 비밀번호 변경 api */
+        const pwChangeRequest = async () => {
+          if(answerAvailable == 1 && pwAble == 1 && pwCheckAble && 1) {
+          await axios
+            .post(`http://localhost:8080/member/change/password`, {
+              accessToken: getCookie("accessToken"),
+             newPassword: pwValue,
+              passwordAnswer: answerValue,
+              passwordQuestion: quiz,
+              refresToken: getCookie("refreshToken"),
+              })
+            .then((res) => {
+              if(res.data.changeResult == true) {
+                alert("비밀번호 변경에 성공하였습니다.")
+              }
+              else {
+                alert("비밀번호 변경에 실패하였습니다.")
+              }
+                
+  
+            })
+            .catch((error) => {
+              alert("요청에 실패하였습니다.");
+              console.log(error);
+            });
+          }
+      };
+
+        /** 회원탈퇴 요청 api */
+        const removeAccount =  () => {
+          
+          axios({
+            method: "delete", // [요청 타입]
+            url: "http://localhost:8080/member/withdrawal", // [요청 주소]
+            data: {
+              accessToken: getCookie("accessToken"),
+               refresToken: getCookie("refreshToken"),
+            }, // [요청 데이터]
+        })
+        .then(function(response) {
+          if(response.data.withdrawalResult == true) {
+            alert("회원탈퇴 되었습니다.")
+            dispatch(logout())
+            deleteCookie("accessToken")
+            deleteCookie("refreshToken")
+            navigate("/main")
+          }
+          else {
+            alert("회원탈퇴에 실패하였습니다.")
+          }
+        })
+        .catch(function(error) {
+          alert("요청에 실패하였습니다.")
+            console.log(error)
+        });
+          
+      };
+
+
+      /**쿠키값 얻기 */
+  function getCookie(name) {
+    var i, x, y, ARRcookies = document.cookie.split(";");
+    
+    for (i = 0; i < ARRcookies.length; i++) {     
+            x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+            y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+            
+            x = x.replace(/^\s+|\s+$/g, "");
+  
+            if (x == name) {
+                    return unescape(y);
+            }
+    }
+  }
+    /**쿠키값 삭제 */
+    var deleteCookie = function(name) {
+      document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+  }
 
   /**비밀번호 유효성 검사 */
   const pwHandler = () => {
@@ -43,11 +161,25 @@ const AccountPage = () => {
     }
   }
 
+  const answerCheckHandler = () => {
+    if (!answerActive) {
+    } else if (answerValue.length > 0) {
+      setAnswerAvailable(1); // 1이면 유효
+    } else {
+      setAnswerAvailable(0); // 0이면 유효하지 않음
+    }
+  }
+
   useEffect(()=> {
     pwHandler()
     pwCheckHandler()
+    answerCheckHandler()
 
-  }, [pwValue, pwCheckValue])
+  }, [pwValue, pwCheckValue, answerValue])
+
+  useEffect(() => {
+    questionRequest()
+  }, [])
 
   return (
     <>
@@ -55,11 +187,12 @@ const AccountPage = () => {
       <Container>
         <SemiTitle>비밀번호 변경</SemiTitle>
         <Text>비밀번호 변경을 원하시면 아래 빈칸을 채워주세요.</Text>
-        <Text>Q. 내가 어렸을 적 살았던 동네는 ?</Text>
+        <Text>Q. {quiz}</Text>
         <InputContainer>
-          <InputText state={answerActive}>비밀번호 변경 답변 *</InputText>
+          <InputText state={answerActive} available={answerAvailable}>비밀번호 변경 답변 *</InputText>
           <EmailInput
             id="answer"
+            available={answerAvailable}
             onChange={(e)=>setAnswerValue(e.target.value)}
             onFocus={() => setAnswerActive(true)}
             onBlur={() => answerValue.length > 0 ? "" : setAnswerActive(false)}
@@ -89,7 +222,7 @@ const AccountPage = () => {
             available={pwCheckAble}
           />
         </InputContainer>
-        <Button answer={answerValue.length} pw={pwAble} pwCheck={pwCheckAble}>비밀번호 변경 이메일 발송</Button>
+        <Button onClick={()=>pwChangeRequest()}answerAble={answerAvailable} pwAble={pwAble} pwCheckAble={pwCheckAble}>비밀번호 변경하기</Button>
       </Container>
       <Container>
         <SemiTitle>회원탈퇴</SemiTitle>
@@ -99,7 +232,7 @@ const AccountPage = () => {
       <CautionBox state={caution}>
         <Text>정말로 회원 탈퇴를 하시겠습니까?</Text>
         <CautionBoxContainer>
-        <CautionButton>확인</CautionButton>
+        <CautionButton onClick={() => removeAccount()}>확인</CautionButton>
         <CautionButton onClick={()=>setCaution(false)}>취소</CautionButton>
         </CautionBoxContainer>
       </CautionBox>
@@ -128,6 +261,7 @@ const Container = styled.div`
   background-color: white;
   box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
   };
+  cursor: pointer;
 `;
 const SemiTitle = styled.div`
   margin-left: 20px;
@@ -195,13 +329,16 @@ const Button = styled.div`
   text-align: center;
   font-weight: 500;
   color: ${(props) => {
-    return props.answer > 0 && props.pw == 1 && props.pwCheck == 1 ? "#FFFFFF" : "#AAAAAA";
+    return props.answerAble == 1 && props.pwAble == 1 && props.pwCheckAble == 1 ? "#FFFFFF" : "#AAAAAA";
   }};
   background-color: ${(props) => {
-    return props.answer > 0 && props.pw == 1 && props.pwCheck == 1? "#3f51b5" : "#DDDDDD";
+    return props.answerAble == 1 && props.pwAble == 1 && props.pwCheckAble == 1? "#3f51b5" : "#DDDDDD";
   }};
   transition: 0.3s;
-  cursor: pointer;
+
+  cursor: ${(props) => {
+    return   props.answerAble == 1 && props.pwAble == 1 && props.pwCheckAble == 1? "pointer" : "";
+  }};
   &:nth-of-type(3) {
     margin-top: 20px;
     width: 80px;
