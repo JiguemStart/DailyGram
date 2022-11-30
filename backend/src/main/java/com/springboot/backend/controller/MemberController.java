@@ -70,7 +70,7 @@ public class MemberController {
     // 회원가입시 이메일 중복체크 API
     @ApiOperation(value = "회원가입시 이메일 중복체크 API")
     @PostMapping(value = "/duplicate-check")
-    public boolean duplicateCheck(@RequestBody String email) {
+    public boolean duplicateCheck(@RequestParam String email) {
         boolean result = memberService.duplicateCheck(email);
         return result;
     }
@@ -93,7 +93,7 @@ public class MemberController {
     // 이메일로 비밀번호변경질문을 받는 API
     @ApiOperation(value = "이메일로 비밀번호변경질문을 받는 API")
     @PostMapping(value = "/search/question-by-email")
-    public String getPasswordQuestionByEmail(@RequestBody String email) {
+    public String getPasswordQuestionByEmail(@RequestParam String email) {
 
         String result = diaryService.getPasswordQuestionByEmail(email);
 
