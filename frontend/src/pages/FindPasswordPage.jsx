@@ -42,7 +42,7 @@ const FindPasswordPage = () => {
     }
   };
 
-    /**비밀번호 찾기 요청 api 수정예정 !!!! */
+    /**비밀번호 찾기 요청 api */
     const findPwRequest = async () => {
       if(emailAvailable == 1 && pwAvailable == 1 && answerAvailable == true &&  pwCheckAvailable == 1) {
       await axios
