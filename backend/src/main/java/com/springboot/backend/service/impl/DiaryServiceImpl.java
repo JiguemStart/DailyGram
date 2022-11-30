@@ -119,14 +119,13 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     public String getPasswordQuestionByEmail(String email) {
 
-            Optional<Member> optionalMember = memberRepository.findByEmail(email);
-            String result = null;
-            if (optionalMember.isPresent()) {
-                result = optionalMember.get().getPasswordQuestion();
-            }
-            return result;
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        String result = null;
 
-
+        if(optionalMember.isPresent()) {
+            result = optionalMember.get().getPasswordQuestion();
+        }
+        return result;
     }
 
     @Override
