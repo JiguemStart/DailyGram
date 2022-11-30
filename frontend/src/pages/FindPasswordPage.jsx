@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FindPasswordPage = () => {
   const [emailActive, setEmailActive] = useState(false); //이메일 input 상태
@@ -18,12 +19,15 @@ const FindPasswordPage = () => {
   const [pwCheckValue, setPwCheckValue] = useState("");
   const [pwCheckAvailable, setPwCheckAvailable] = useState(2);
 
+  const navigate = useNavigate()
+
   /** 이메일주소로 질문 리턴받는 api */
   const questionRequest = async () => {
     if (emailAvailable == 1) {
       await axios
         .post(`http://localhost:8080/member/search/question-by-email?email=${emailValue}`)
         .then((res) => {
+          console.log(emailValue)
           console.log(res);
           if (res.data) {
             setQuiz(res.data)
@@ -39,24 +43,26 @@ const FindPasswordPage = () => {
   };
 
     /**비밀번호 찾기 요청 api 수정예정 !!!! */
-    const signupRequset = async () => {
+    const findPwRequest = async () => {
       if(emailAvailable == 1 && pwAvailable == 1 && answerAvailable == true &&  pwCheckAvailable == 1) {
       await axios
         .post(`http://localhost:8080/member/search/password`, {
             email: emailValue,
-            password: pwValue,
+            newPassword: pwValue,
             passwordAnswer: answerValue,
-            passwordQuestion: quizValue
             })
         .then(res => {
           if(res.data == true) {
-            alert("회원가입에 성공하였습니다.")
+            alert("비밀번호 변경에 성공하였습니다.")
             navigate("/main")
+          }
+          else {
+            alert("비밀번호 답변이 틀렸습니다.")
           }
           
         })
         .catch(error => {
-          alert("회원가입에 실패하였습니다.")
+          alert("요청에 실패하였습니다.")
           console.log(error);
         })
       }
@@ -196,6 +202,14 @@ const answerCheckHandler = () => {
             onBlur={() => pwCheckValue.length > 0 ? setPwCheckActive(true) : setPwCheckActive(false)}
           />
         </InputContainer>
+        <FindButton
+          emailAvailable={pwCheckAvailable}
+
+          onClick={() => findPwRequest()}
+          state={answerAvailable}
+        >
+          확인
+        </FindButton>
         </QuizAnswerContainer>
         <LoginButton
           emailAvailable={emailAvailable}
@@ -326,6 +340,28 @@ const QuizText = styled.div`
   font-size: 18px;
   font-weight: 600;
 `
+
+const FindButton = styled.div`
+display: ${(props) => {
+  return props.state ? "flex" : "none";
+}};
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  border-radius: 5px;
+  color: ${(props) => {
+    return props.emailAvailable == 1 ? "#FFFFFF" : "#AAAAAA";
+  }};
+  background-color: ${(props) => {
+    return props.emailAvailable == 1 ? "#3f51b5" : "#DDDDDD";
+  }};
+
+  cursor: ${(props) => {
+    return props.emailAvailable == 1 ? "pointer" : "";
+  }};
+  font-weight: 600;
+  transition: 0.3s;
+`;
 
 
 export default FindPasswordPage;
