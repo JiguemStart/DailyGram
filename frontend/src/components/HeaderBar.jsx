@@ -1,13 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { account_icon, login_icon, logout_icon, logo_icon } from "../assets";
 import { useState } from "react";
 import MobileSideBar from "./MobileSideBar";
 import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from "../feature/counter/counterSlice";
 
 const HeaderBar = () => {
-  const [isLogin, setIsLogin] = useState(false);
   const [mobileBarActive, setMobileBarActive] = useState(false)
+  
+  const navigate = useNavigate()
+
+  const isLogin = useSelector((state) => state.isLogin.value);
+  const dispatch = useDispatch()
+
+  /**쿠키값 얻기 */
+  function getCookie(name) {
+    var i, x, y, ARRcookies = document.cookie.split(";");
+    
+    for (i = 0; i < ARRcookies.length; i++) {     
+            x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+            y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+            
+            x = x.replace(/^\s+|\s+$/g, "");
+  
+            if (x == name) {
+                    return unescape(y);
+            }
+    }
+  }
+
+  /**쿠키값 삭제 */
+  var deleteCookie = function(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+}
+
+  /**쿠키값 있으면 로그인 유지 */ 
+  const loginCheck = () => {
+    if(getCookie("refreshToken")) {
+      dispatch(login())
+    }
+  }
+
+  /**로그아웃 요청 */
+  const logoutHandler = () => {
+    dispatch(logout())
+    deleteCookie("accessToken")
+    deleteCookie("refreshToken")
+    navigate("/main")
+  }
 
   const clickHandler = (id) => {
     if (id == "mobileButton") {
@@ -20,10 +62,12 @@ const HeaderBar = () => {
 
   useEffect(() => {
     document.addEventListener("click", (e) => clickHandler(e.target.id));
+      loginCheck()
   }, []);
 
   return (
     <>
+    <EmptyBox />
       <Container>
         <ContentBox>
           <Button>
@@ -94,7 +138,7 @@ const HeaderBar = () => {
                 <path d="M9 42q-1.2 0-2.1-.9Q6 40.2 6 39V9q0-1.2.9-2.1Q7.8 6 9 6h14.55v3H9v30h14.55v3Zm24.3-9.25-2.15-2.15 5.1-5.1h-17.5v-3h17.4l-5.1-5.1 2.15-2.15 8.8 8.8Z" />
               </svg>
             </Icon>
-            <ButtonText>로그아웃</ButtonText>
+            <ButtonText onClick={()=>logoutHandler()}>로그아웃</ButtonText>
             </LinkBox>
             </Link>
           </Button>
@@ -118,8 +162,16 @@ const HeaderBar = () => {
   );
 };
 
+const EmptyBox = styled.div`
+
+  height: 50px;
+`
+
 const Container = styled.header`
-  display: fixed;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  width: 100%;
   background-color: #3f51b5;
 `;
 
