@@ -5,7 +5,7 @@
 [Wiki 보러가기](https://www.notion.so/DailyGram-36d6ccffe3f6417c94ba8f35a6f2f3bf)
 
 # 카테고리 설명
-<img src="https://user-images.githubusercontent.com/70586428/205201072-cfc2bd14-a63f-428e-be3c-9b47869b89c7.png" width="1000">
+<img src="https://user-images.githubusercontent.com/70586428/205204178-a5551000-f18f-4631-8442-51e26d695aee.png" width="1000">
 
 # 주요기능
 - Access Token, Refresh Token을 이용하여 인증을 통해 사이트 이용 가능
