@@ -68,6 +68,7 @@ const AccountPage = () => {
             .then((res) => {
               if(res.data.changeResult == true) {
                 alert("비밀번호 변경에 성공하였습니다.")
+                window.location.reload()
               }
               else {
                 alert("비밀번호 변경에 실패하였습니다.")
@@ -259,7 +260,6 @@ const Container = styled.div`
   background-color: white;
   box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
   };
-  cursor: pointer;
 `;
 const SemiTitle = styled.div`
   margin-left: 20px;
@@ -343,6 +343,7 @@ const Button = styled.div`
     color: #FFFFFF;
     background-color: #ff4081;
   };
+  cursor: pointer;
 `;
 
 const CautionBox = styled.div`
