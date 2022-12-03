@@ -40,12 +40,10 @@ const AccountPage = () => {
           .then((res) => {
             if(res.data.tokenResult == true) {
               setQuiz(res.data.passwordQuestion)
-              console.log("댐")
             }
             else {
               setQuiz("비밀번호 질문을 불러오는데 실패하였습니다.")
-              console.log("안댐")
-            }
+             }
               
 
           })
