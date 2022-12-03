@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../feature/counter/counterSlice";
 
 const LoginPage = () => {
   const [emailActive, setEmailActive] = useState(false); //이메일 input 상태
@@ -9,6 +12,50 @@ const LoginPage = () => {
   const [pwValue, setPwValue] = useState(""); // 비밀번호 input 값
   const [emailAvailable, setEmailAvailable] = useState(2);
   const [pwAvailable, setPwAvailable] = useState(2);
+
+  const isLogin = useSelector((state) => state.isLogin.value);
+  const dispatch = useDispatch()
+
+  const navigate = useNavigate()
+
+  function setCookie(name, value, days) {
+    if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            var expires = "; expires=" + date.toGMTString();
+    } else {
+           var expires = "";
+    }
+    
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+
+    /** 로그인 요청 api */
+    const loginRequest = async () => {
+      if(emailAvailable == 1 && pwAvailable == 1) {
+      await axios
+        .post(`http://localhost:8080/member/login`, {
+          email: emailValue,
+          password: pwValue
+            })
+        .then(res => {
+          if(res.data.result == true) {
+            setCookie("accessToken", res.data.accessToken, 1)
+            setCookie("refreshToken", res.data.refreshToken, 1)
+            dispatch(login())
+            navigate("/main")
+          }
+          else {
+            alert("존재하지 않는 이메일입니다.")
+          }
+        })
+        .catch(error => {
+          alert("요청에 실패하였습니다.")
+          console.log(error);
+        })
+      }
+    };
 
   /**input */
   const inputHandler = (id) => {
@@ -85,7 +132,7 @@ const LoginPage = () => {
             onBlur={() => setPwValue.length > 0 ? setPwActive(true) : setPwActive(false)}
           />
         </InputContainer>
-        <LoginButton emailAvailable={emailAvailable} pwAvailable={pwAvailable}>로그인</LoginButton>
+        <LoginButton emailAvailable={emailAvailable} pwAvailable={pwAvailable} onClick={()=>loginRequest()}>로그인</LoginButton>
         <ButtonContainer>
           <Button>
             <Link to={`/signup`} style={{ textDecoration: "none" }}>
@@ -228,6 +275,9 @@ const LoginButton = styled.div`
   }};
   font-weight: 600;
   transition: 0.3s;
+  cursor: ${(props) => {
+    return props.emailAvailable==1 && props.pwAvailable == 1 ? "pointer" : "";
+  }};
 `;
 const ButtonContainer = styled.div`
   margin: 0 auto;

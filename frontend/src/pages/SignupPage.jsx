@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
 
 const SignupPage = () => {
   const [emailActive, setEmailActive] = useState(false); //이메일 input 상태
@@ -25,6 +26,59 @@ const SignupPage = () => {
 
   const [privacyValue, setPrivacyValue] = useState(false)
   const [privacyActive, setPrivacyActive] = useState(false)
+
+  const [emailCheck, setEmailCheck] = useState(false)
+
+  const navigate = useNavigate()
+
+  /**회원가입 요청 api */
+  const signupRequset = async () => {
+    if(emailAvailable == 1 && pwAvailable == 1 && privacyValue == true && answerAvailable == 1 && quizAvailable == 1) {
+    await axios
+      .post(`http://localhost:8080/member/register`, {
+          email: emailValue,
+          password: pwValue,
+          passwordAnswer: answerValue,
+          passwordQuestion: quizValue
+          })
+      .then(res => {
+        if(res.data == true) {
+          alert("회원가입에 성공하였습니다.")
+          navigate("/main")
+        }
+        
+      })
+      .catch(error => {
+        alert("회원가입에 실패하였습니다.")
+        console.log(error);
+      })
+    }
+  };
+
+    /**이메일 중복확인 요청 api */
+    const emailCheckRequest = async () => {
+      if(emailAvailable == 1 && emailCheck == false) {
+      await axios
+        .post(`http://localhost:8080/member/duplicate-check?email=${emailValue}`)
+        .then(res => {
+          if(res.data == true) {
+            alert("중복되지 않은 이메일입니다.")
+            setEmailCheck(true)
+          }
+          else {
+            alert("중복된 이메일입니다.")
+          }
+        })
+        .catch(error => {
+          alert("요청에 실패하였습니다.")
+          console.log(error);
+        })
+      }
+    };
+
+
+
+
 
   /**input */
   const inputHandler = (id) => {
@@ -71,6 +125,7 @@ const SignupPage = () => {
     } else {
       setEmailAvailable(0); //0이면 유효하지 않음
     }
+    setEmailCheck(false)
   };
 
   /**이메일 재확인 유효성 검사 */
@@ -124,7 +179,6 @@ const SignupPage = () => {
   
   /**이벤트 리스너 실행 및 갱신 */
   useEffect(() => {
-    emailCheckHandler();
     pwCheckHandler();
     emailReCheckHandler();
     pwReCheckHandler();
@@ -136,6 +190,10 @@ const SignupPage = () => {
       document.removeEventListener("click", (e) => inputHandler(e.target.id));
     };
   }, [emailValue, pwValue, emailCheckValue, pwCheckValue,, quizValue, answerValue]);
+
+  useEffect(()=> {
+    emailCheckHandler();
+  }, [emailValue])
 
   return (
     <>
@@ -152,6 +210,7 @@ const SignupPage = () => {
             onFocus={() => setEmailActive(true)}
             onBlur={() => emailValue.length > 0 ? setEmailActive(true) : setEmailActive(false)}
           />
+          <CheckButton state={emailCheck} onClick={() => emailCheckRequest()}>이메일 중복확인</CheckButton>
         </InputContainer>
         <InputContainer>
           <InputText state={emailCheckActive} available={emailCheckAvailable}>
@@ -220,7 +279,7 @@ const SignupPage = () => {
           <PrivacyButton onClick={()=>setPrivacyActive(true)}>개인정보 취급방침</PrivacyButton>
           <PrivacyText>에 동의합니다.</PrivacyText>
         </PrivacyContainer>
-        <LoginButton emailAvailable={emailCheckAvailable} pwAvailable={pwCheckAvailable} check={privacyValue}>
+        <LoginButton emailAvailable={emailCheckAvailable} pwAvailable={pwCheckAvailable} check={privacyValue} answerAvailable={answerAvailable} quizAvailable={quizAvailable} onClick={()=>signupRequset()}> 
           회원가입
         </LoginButton>
       </Container>
@@ -315,6 +374,31 @@ const EmailInput = styled.input`
   }};
   transition: 0.3s;
 `;
+
+const CheckButton = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+height: 38px;
+border-radius: 5px;
+color: ${(props) => {
+  return props.state == false
+    ? "#FFFFFF"
+    : "#AAAAAA";
+}};
+background-color: ${(props) => {
+  return props.state == false
+    ? "#3f51b5"
+    : "#DDDDDD";
+}};
+font-weight: 600;
+transition: 0.3s;
+cursor: ${(props) => {
+  return props.state == false
+    ? "pointer"
+    : "";
+}};
+`
 const PasswordInput = styled.input`
   padding: 0;
   display: block;
@@ -341,17 +425,22 @@ const LoginButton = styled.div`
   height: 38px;
   border-radius: 5px;
   color: ${(props) => {
-    return props.emailAvailable == 1 && props.pwAvailable == 1 && props.check == true
+    return props.emailAvailable == 1 && props.pwAvailable == 1 && props.check == true && props.answerAvailable == 1 && props.quizAvailable == 1
       ? "#FFFFFF"
       : "#AAAAAA";
   }};
   background-color: ${(props) => {
-    return props.emailAvailable == 1 && props.pwAvailable == 1 && props.check == true
+    return props.emailAvailable == 1 && props.pwAvailable == 1 && props.check == true && props.answerAvailable == 1 && props.quizAvailable == 1
       ? "#3f51b5"
       : "#DDDDDD";
   }};
   font-weight: 600;
   transition: 0.3s;
+  cursor: ${(props) => {
+    return props.emailAvailable == 1 && props.pwAvailable == 1 && props.check == true && props.answerAvailable == 1 && props.quizAvailable == 1
+      ? "pointer"
+      : "";
+  }};
 `;
 
 const PrivacyContainer = styled.div`

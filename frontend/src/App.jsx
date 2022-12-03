@@ -82,7 +82,7 @@ function App() {
             <Routes>
               <Route path="/account" element={<AccountPage />} />
               <Route path="/diaryList" element={<DairyListPage />} />
-              <Route path="/diaryDetail" element={<DiaryDetailPage />} />
+              <Route path="/diaryDetail/*" element={<DiaryDetailPage />} />
               <Route path="/diaryWrite" element={<DiaryWritePage />} />
               <Route path="/findPassword" element={<FindPasswordPage />} />
               <Route path="/introduction" element={<IntroductionPage />} />
