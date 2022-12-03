@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 const DairyListPage = () => {
   const [list, setList] = useState([]);
   const [pageList, setPageList] = useState([]);
 
   const navigate = useNavigate();
+
+  const isLogin = useSelector((state) => state.isLogin.value);
+  const dispatch = useDispatch()
 
   /** 일기목록 조회 api */
   const listRequest = async (num) => {
@@ -88,6 +92,7 @@ const DairyListPage = () => {
   }
 
   useEffect(() => {
+    isLogin ? "" : navigate("/main")
     listRequest(1);
     listCountReqeust();
   }, []);
