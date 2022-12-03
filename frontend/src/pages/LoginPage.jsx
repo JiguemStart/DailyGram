@@ -35,12 +35,11 @@ const LoginPage = () => {
     const loginRequest = async () => {
       if(emailAvailable == 1 && pwAvailable == 1) {
       await axios
-        .post(`http://dailygram-env-2.eba-33ajdt9q.ap-northeast-2.elasticbeanstalk.com/member/login`, {
+        .post(`http://localhost:8080/member/login`, {
           email: emailValue,
           password: pwValue
             })
         .then(res => {
-          alert("통신성공")
           if(res.data.result == true) {
             setCookie("accessToken", res.data.accessToken, 1)
             setCookie("refreshToken", res.data.refreshToken, 1)
