@@ -27,8 +27,6 @@ const FindPasswordPage = () => {
       await axios
         .post(`http://localhost:8080/member/search/question-by-email?email=${emailValue}`)
         .then((res) => {
-          console.log(emailValue)
-          console.log(res);
           if (res.data) {
             setQuiz(res.data)
           } else {
