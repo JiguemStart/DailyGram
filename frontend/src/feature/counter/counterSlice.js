@@ -7,11 +7,9 @@ export const counterSlice = createSlice({
   },
   reducers: {
     login: (state) => {
-      console.log("로그인 상태")
       state.value = true
     },
     logout: (state) => {
-      console.log("로그아웃 상태")
       state.value = false
     },
   }

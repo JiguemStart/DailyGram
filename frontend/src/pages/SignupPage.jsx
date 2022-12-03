@@ -61,7 +61,6 @@ const SignupPage = () => {
       await axios
         .post(`http://localhost:8080/member/duplicate-check?email=${emailValue}`)
         .then(res => {
-          console.log(res)
           if(res.data == true) {
             alert("중복되지 않은 이메일입니다.")
             setEmailCheck(true)
