@@ -1,0 +1,9 @@
+1. 프로젝트 생성시, 의존성 추가 필수
+- Developer Tools : Lombok, Spring Configuration Processor
+- Web : Spring Web
+- SQL : Spring Data JPA, MariaDB Driver
+- 따로 추가 : Spring Boot Starter Security
+- 따로 추가 : Swagger2
+2. Logger 설정
+- logback-spring.xml 생성
+3. SwaggerConfiguration 설정

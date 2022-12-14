@@ -48,6 +48,7 @@ footer, header, hgroup, menu, nav, section {
 display: block;
 }
 body {
+background-color: #fafafa;
 line-height: 1;
 }
 ol, ul {
@@ -75,24 +76,43 @@ function App() {
       <GlobalStyle />
       <BrowserRouter>
         <HeaderBar />
-        <SideBar />
-        <Routes>
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/diaryList" element={<DairyListPage />} />
-          <Route path="/diaryDetail" element={<DiaryDetailPage />} />
-          <Route path="/diaryWrite" element={<DiaryWritePage />} />
-          <Route path="/findPassword" element={<FindPasswordPage />} />
-          <Route path="/Introduction" element={<IntroductionPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/main" element={<MainPage />} />
-          <Route path="/notice" element={<NoticePage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="*" element={<MainPage />} />
-        </Routes>
-        <FooterBar />
+        <Container>
+          <SideBar />
+          <PageContainer>
+            <Routes>
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="/diaryList" element={<DairyListPage />} />
+              <Route path="/diaryDetail/*" element={<DiaryDetailPage />} />
+              <Route path="/diaryWrite" element={<DiaryWritePage />} />
+              <Route path="/findPassword" element={<FindPasswordPage />} />
+              <Route path="/introduction" element={<IntroductionPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/main" element={<MainPage />} />
+              <Route path="/notice" element={<NoticePage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="*" element={<MainPage />} />
+            </Routes>
+          </PageContainer>
+          <FooterBar />
+        </Container>
       </BrowserRouter>
     </>
   );
 }
+
+const Container = styled.div`
+  margin: 0 auto;
+  max-width: 1200px;
+`;
+
+const PageContainer = styled.div`
+  padding-top: 30px;
+  padding-left: 204px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  @media screen and (max-width: 820px) {
+    padding-left: 20px;
+};
+`;
 
 export default App;
