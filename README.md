@@ -1,6 +1,6 @@
 # 서비스 소개
 - 누구든지 쉽게 나만의 인터넷 공간에서 일기를 작성 및 관리 할 수 있는 서비스 입니다.
-- 배포 사이트 : http://dailygram.herokuapp.com/
+- 배포 사이트 : ~~http://dailygram.herokuapp.com/~~
 
 # Wiki
 [Wiki 보러가기](https://www.notion.so/DailyGram-36d6ccffe3f6417c94ba8f35a6f2f3bf)
